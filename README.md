@@ -6,6 +6,8 @@ A simple command line tool to find files in a directory tree.
 ./finder_rs <options> <filename>
 ```
 ### Options:
+> [!NOTE]
+> The options are case insensitive.
 - -h: Show help (not yet implemented)
 - -t: Show elapsed time
 
@@ -14,6 +16,6 @@ A simple command line tool to find files in a directory tree.
 ./finder_rs -t main.rs
 ```
 
-[!WARNING]
-This is a work in progress.
-This is a preliminary version. It is not yet feature complete. And it will be updated in the near future.
+> [!WARNING]
+> This is a work in progress.
+> This is a preliminary version. It is not yet feature complete. And it will be updated in the near future.
