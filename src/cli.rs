@@ -8,8 +8,12 @@ pub enum Color {
 }
 
 pub struct ParsedArgs {
-    pub options: Vec<String>,
+    pub options: Options,
     pub filename: Option<String>,
+}
+
+pub struct Options {
+    pub show_time: bool,
 }
 
 /// # Parse command line arguments
@@ -34,7 +38,12 @@ pub fn parse_args() -> Result<ParsedArgs, &'static str> {
         }
     }
 
-    Ok(ParsedArgs { options, filename })
+    Ok(ParsedArgs {
+        options: Options {
+            show_time: options.contains(&"-t".to_string()),
+        },
+        filename,
+    })
 }
 
 /// # Print text in the given color

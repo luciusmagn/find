@@ -3,7 +3,15 @@ A simple command line tool to find files in a directory tree.
 
 ## Usage
 ```
-./finder_rs <filename>
+./finder_rs <options> <filename>
 ```
-## Disclaimer
-This is a preliminary version. It is not yet feature complete. And it will be updated as I learn Rust in the near future.
+### Options:
+-t: Show elapsed time
+
+## Example:
+```
+./finder_rs -t main.rs
+```
+
+[!WARNING!] This is a work in progress.
+This is a preliminary version. It is not yet feature complete. And it will be updated in the near future.

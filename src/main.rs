@@ -13,9 +13,8 @@ fn main() {
         eprintln!("Error: {}", err);
         process::exit(1);
     });
-
     let filename = args.filename.unwrap();
-    // TODO: let options = args.options;
+    let options = args.options;
 
     // Get all root directories
     let root_dirs = finder::get_root_dirs();
@@ -48,9 +47,11 @@ fn main() {
     }
 
     // Time elapsed
-    let elapsed = start.elapsed();
-    white_space(1);
-    cli::color_print(cli::Color::Green, &format!("Elapsed time: {:.2?}", elapsed));
+    if options.show_time {
+        let elapsed = start.elapsed();
+        white_space(1);
+        cli::color_print(cli::Color::Green, &format!("Elapsed time: {:.2?}", elapsed));
+    }
 }
 
 fn white_space(n: usize) {
