@@ -61,13 +61,15 @@ fn search_files_internal(dir: &Path, filename: &str, results: &mut Vec<PathBuf>)
         }
         Err(e) => {
             if e.kind() == io::ErrorKind::PermissionDenied {
-                cli::print_red(&format!("Inaccessible directory: {}", dir.display()));
+                cli::color_print(
+                    cli::Color::Red,
+                    &format!("Inaccessible directory: {}", dir.display()),
+                );
             } else {
-                cli::print_red(&format!(
-                    "Error reading directory -> Error: {} -> Directory: {}",
-                    e,
-                    dir.display()
-                ));
+                cli::color_print(
+                    cli::Color::Red,
+                    &format!("Error: {} | Reading: {}", e, dir.display()),
+                );
             }
         }
     }

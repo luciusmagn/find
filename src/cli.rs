@@ -1,5 +1,12 @@
 use std::env;
 
+#[derive(PartialEq)]
+pub enum Color {
+    Red,
+    Blue,
+    Green,
+}
+
 /// # Parse command line arguments
 /// Expects exactly one argument, the file name to search for
 pub fn parse_args() -> Result<String, &'static str> {
@@ -11,14 +18,11 @@ pub fn parse_args() -> Result<String, &'static str> {
     }
 }
 
-pub fn print_red(text: &String) {
-    eprintln!("\x1b[31m{}\x1b[0m", text);
-}
-
-pub fn print_blue(text: &String) {
-    println!("\x1b[34m{}\x1b[0m", text);
-}
-
-pub fn print_green(text: &String) {
-    println!("\x1b[32m{}\x1b[0m", text);
+/// # Print text in the given color
+pub fn color_print(color: Color, text: &String) {
+    match color {
+        Color::Red => eprintln!("\x1b[31m{}\x1b[0m", text),
+        Color::Blue => println!("\x1b[34m{}\x1b[0m", text),
+        Color::Green => println!("\x1b[32m{}\x1b[0m", text),
+    }
 }
