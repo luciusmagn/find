@@ -8,11 +8,14 @@ fn main() {
     // Start time
     let start = Instant::now();
 
-    // Parse command line arguments for file name
-    let filename = cli::parse_args().unwrap_or_else(|err| {
+    // Parse command line arguments for file name and options
+    let args = cli::parse_args().unwrap_or_else(|err| {
         eprintln!("Error: {}", err);
         process::exit(1);
     });
+
+    let filename = args.filename.unwrap();
+    // TODO: let options = args.options;
 
     // Get all root directories
     let root_dirs = finder::get_root_dirs();

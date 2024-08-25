@@ -7,15 +7,34 @@ pub enum Color {
     Green,
 }
 
+pub struct ParsedArgs {
+    pub options: Vec<String>,
+    pub filename: Option<String>,
+}
+
 /// # Parse command line arguments
 /// Expects exactly one argument, the file name to search for
-pub fn parse_args() -> Result<String, &'static str> {
-    let args: Vec<String> = env::args().collect();
-    if args.len() != 2 {
-        Err("Only one file name should be provided")
-    } else {
-        Ok(args[1].clone())
+pub fn parse_args() -> Result<ParsedArgs, &'static str> {
+    let args: Vec<String> = env::args().skip(1).collect();
+
+    if args.is_empty() {
+        return Err("No file name given");
     }
+
+    let mut options = Vec::new();
+    let mut filename = None;
+
+    for arg in args {
+        if arg.starts_with("-") {
+            options.push(arg);
+        } else if filename.is_none() {
+            filename = Some(arg);
+        } else {
+            return Err("Multiple file names given");
+        }
+    }
+
+    Ok(ParsedArgs { options, filename })
 }
 
 /// # Print text in the given color
