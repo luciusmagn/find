@@ -1,22 +1,30 @@
 mod cli;
 mod finder;
 
+use std::path::PathBuf;
 use std::process;
 use std::time::Instant;
 
 fn main() {
-    // Start time
     let start = Instant::now();
 
-    // Parse command line arguments for file name and options
-    let args = cli::parse_args().unwrap_or_else(|err| {
-        eprintln!("Error: {}", err);
-        process::exit(1);
+    let (options, filename) = cli::parse_args();
+    let filename = filename.unwrap_or_else(|| {
+        // If no file name was given, print help message and exit the program
+        cli::color_print(
+            cli::Color::Red,
+            &"No file name was given - show help message:".to_string(),
+        );
+        cli::white_space(1);
+        cli::print_help();
+        process::exit(0);
     });
-    let filename = args.filename.unwrap();
-    let options = args.options;
 
-    // Get all root directories
+    if options.show_help {
+        cli::print_help();
+        process::exit(0);
+    }
+
     let root_dirs = finder::get_root_dirs();
     let mut results = Vec::new();
 
@@ -28,6 +36,17 @@ fn main() {
         }
     }
 
+    print_results(&results, &filename);
+
+    // If time was requested, print the time elapsed
+    if options.show_time {
+        let elapsed = start.elapsed();
+        cli::white_space(1);
+        cli::color_print(cli::Color::Green, &format!("Elapsed time: {:.2?}", elapsed));
+    }
+}
+
+fn print_results(results: &Vec<PathBuf>, filename: &String) {
     if results.is_empty() {
         // If no files were found
         cli::color_print(
@@ -36,7 +55,7 @@ fn main() {
         );
     } else {
         // If files were found print all the occurrences
-        white_space(2);
+        cli::white_space(2);
         cli::color_print(
             cli::Color::Green,
             &format!("Found {} occurrences of '{}':", results.len(), filename),
@@ -44,18 +63,5 @@ fn main() {
         for path in results {
             cli::color_print(cli::Color::Blue, &format!("{}", path.display()));
         }
-    }
-
-    // Time elapsed
-    if options.show_time {
-        let elapsed = start.elapsed();
-        white_space(1);
-        cli::color_print(cli::Color::Green, &format!("Elapsed time: {:.2?}", elapsed));
-    }
-}
-
-fn white_space(n: usize) {
-    for _ in 0..n {
-        println!("");
     }
 }

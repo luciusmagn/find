@@ -27,18 +27,13 @@ pub fn get_root_dirs() -> Vec<PathBuf> {
 }
 
 /// # Traverse the directory tree and search for all files with the given filename
-pub fn search_files(dir: &Path, filename: &str) -> io::Result<Vec<PathBuf>> {
-    let mut results = Vec::new();
-    search_files_internal(dir, filename, &mut results);
-    Ok(results)
-}
-
-/// # Recursively traverse the current directory and search for all files with the given filename
 /// Arguments are:
 /// - The directory to search in
 /// - The filename to search for
-/// - And a mutable reference to a vector to store the results in
-fn search_files_internal(dir: &Path, filename: &str, results: &mut Vec<PathBuf>) {
+pub fn search_files(dir: &Path, filename: &str) -> io::Result<Vec<PathBuf>> {
+    let mut results = Vec::new();
+
+    // Recursively traverse the directory
     match fs::read_dir(dir) {
         Ok(entries) => {
             // Iterate over all entries in the directory
@@ -49,8 +44,9 @@ fn search_files_internal(dir: &Path, filename: &str, results: &mut Vec<PathBuf>)
                 // If the current entry is a directory, recursively search in it
                 // Otherwise, check if the current entry is a file and if it matches the filename
                 if path.is_dir() {
-                    // println!("Looking at: {}", path.display());
-                    search_files_internal(&path, filename, results);
+                    if let Ok(mut sub_results) = search_files(&path, filename) {
+                        results.append(&mut sub_results);
+                    }
                 } else if path.is_file() {
                     if path.file_name().and_then(|n| n.to_str()) == Some(filename) {
                         // If the file matches the filename, add it to the results vector
@@ -73,4 +69,6 @@ fn search_files_internal(dir: &Path, filename: &str, results: &mut Vec<PathBuf>)
             }
         }
     }
+
+    Ok(results)
 }
