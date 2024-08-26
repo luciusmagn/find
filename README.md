@@ -30,6 +30,5 @@ cargo build
 ```
 
 > [!WARNING]
-> This is a work in progress.
-> This is a preliminary version.
-> It is not yet feature complete, and it will be updated in the near future.
+> - This is a work in progress.
+> - This is a preliminary version.
