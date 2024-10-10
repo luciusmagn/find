@@ -1,67 +1,64 @@
-mod cli;
+use std::time::Instant;
+use clap::{Arg, Command};
+use colored::*;
+use std::path::Path;
+
 mod finder;
 
-use std::path::PathBuf;
-use std::process;
-use std::time::Instant;
-
 fn main() {
-    let start = Instant::now();
+    // Define the CLI arguments using `clap`
+    let matches = Command::new("File Finder")
+        .version("1.0")
+        .author("Your Name")
+        .about("Searches for a file in a given directory")
+        .arg(Arg::new("directory")
+            .short('d')
+            .long("directory")
+            .value_name("DIRECTORY")
+            .help("The directory to search in")
+            .takes_value(true)
+            .required(true))
+        .arg(Arg::new("filename")
+            .short('f')
+            .long("filename")
+            .value_name("FILENAME")
+            .help("The name of the file to search for")
+            .takes_value(true)
+            .required(true))
+        .arg(Arg::new("benchmark")
+            .short('b')
+            .long("benchmark")
+            .help("Show the time taken for the search"))
+        .get_matches();
 
-    let (options, filename) = cli::parse_args();
-    let filename = filename.unwrap_or_else(|| {
-        // If no file name was given, print help message and exit the program
-        cli::color_print(
-            cli::Color::Red,
-            &"No file name was given - show help message:".to_string(),
-        );
-        cli::white_space(1);
-        cli::print_help();
-        process::exit(0);
-    });
+    // Get the directory and filename arguments
+    let directory = matches.value_of("directory").unwrap();
+    let filename = matches.value_of("filename").unwrap();
+    let benchmark = matches.is_present("benchmark");
 
-    if options.show_help {
-        cli::print_help();
-        process::exit(0);
-    }
+    // Start the benchmark timer if the flag is set
+    let start_time = Instant::now();
 
-    let root_dirs = finder::get_root_dirs();
-    let mut results = Vec::new();
+    // Perform the search
+    let results = finder::search_files(Path::new(directory), filename);
 
-    // Traverse all root directories and search for all the occurences of the file
-    for root in root_dirs {
-        match finder::search_files(&root, &filename) {
-            Ok(mut files) => results.append(&mut files),
-            Err(e) => eprintln!("Error searching {}: {}", root.display(), e),
-        }
-    }
-
-    print_results(&results, &filename);
-
-    // If time was requested, print the time elapsed
-    if options.show_time {
-        let elapsed = start.elapsed();
-        cli::white_space(1);
-        cli::color_print(cli::Color::Green, &format!("Elapsed time: {:.2?}", elapsed));
-    }
-}
-
-fn print_results(results: &Vec<PathBuf>, filename: &String) {
+    // Output results
     if results.is_empty() {
-        // If no files were found
-        cli::color_print(
-            cli::Color::Blue,
-            &format!("No files found matching '{}'", filename),
-        );
+        println!("{}", "No files found.".red());
     } else {
-        // If files were found print all the occurrences
-        cli::white_space(2);
-        cli::color_print(
-            cli::Color::Green,
-            &format!("Found {} occurrences of '{}':", results.len(), filename),
-        );
-        for path in results {
-            cli::color_print(cli::Color::Blue, &format!("{}", path.display()));
+        println!("{}", "Files found:".green());
+        for result in results {
+            println!("{}", result.display().to_string().yellow());
         }
+    }
+
+    // Show benchmark if the flag was set
+    if benchmark {
+        let duration = start_time.elapsed();
+        println!(
+            "{}: {} seconds",
+            "Search completed in".blue(),
+            format!("{:.2}", duration.as_secs_f64()).yellow()
+        );
     }
 }
