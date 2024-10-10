@@ -1,34 +1,23 @@
-# finder_rs
-A simple command line tool to find files in your system by name.
+# Find
+A command line tool written in Rust that searches for a file in a given directory.
 
 ## Usage
-Either run the binary directly or use cargo to run it directly:
+There are two to run the program:
+- Cargo:
+```bash
+cargo run -- --help # For further information of usage
 ```
-cargo run -- [options] <filename>
-```
-```
-./finder_rs [options] <filename>
+- Binary:
+```bash
+# First build the binary
+cargo build --release
+# Then run the binary
+./target/release/find --help # For further information of usage
 ```
 
-If you want to use the binary directly, you must build the project first:
-```
-cargo build
-```
-
-### Options:
 > [!NOTE]
-> The options are case insensitive.
-- -h, --help: Print help message
-- -t, --time: Show time elapsed during search
+> - Even though it is supposed to work in both Unix like systems and Windows it hasn't been tested thoroughly.
+> - New features will continue being addded and this is an early version of the program.
 
-## Examples:
-```
-./finder_rs -t main.rs
-```
-```
-./finder_rs --help
-```
-
-> [!WARNING]
-> - This is a work in progress.
-> - This is a preliminary version.
+## Features
+- Searches for a file in a given directory.

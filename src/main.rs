@@ -1,4 +1,5 @@
 use std::path::Path;
+use std::time::Instant;
 
 use clap::Parser;
 
@@ -27,7 +28,7 @@ fn main() {
     let dir = &args.dir;
     let time = args.time;
 
-    let start = std::time::Instant::now();
+    let start = Instant::now();
     let results = finder::search_files(&Path::new(dir), filename);
     let elapsed = start.elapsed();
 
