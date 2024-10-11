@@ -2,7 +2,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use colored::*;
 
-pub fn search_files(dir: &Path, filename: &str) -> Vec<PathBuf> {
+pub fn search_files(dir: &Path, filename: &str, show_dirs: &bool) -> Vec<PathBuf> {
     let mut results = Vec::new();
 
     match fs::read_dir(dir) {
@@ -11,7 +11,10 @@ pub fn search_files(dir: &Path, filename: &str) -> Vec<PathBuf> {
                 let path = entry.path();
 
                 if path.is_dir() {
-                    results.extend(search_files(&path, filename));
+                    if *show_dirs {
+                        println!("{}", format!("Searching at {}", path.display()).green());
+                    }
+                    results.extend(search_files(&path, filename, show_dirs));
                 } else if path.is_file() {
                     if path.file_name().and_then(|n| n.to_str()) == Some(filename) {
                         results.push(path);

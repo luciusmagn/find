@@ -17,7 +17,3 @@ cargo build --release
 
 > [!NOTE]
 > - Even though it is supposed to work in both Unix like systems and Windows it hasn't been tested thoroughly.
-> - New features will continue being addded and this is an early version of the program.
-
-## Features
-- Searches for a file in a given directory.
