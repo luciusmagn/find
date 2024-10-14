@@ -1,6 +1,6 @@
 use std::fs;
-use std::path::{Path, PathBuf};
 use colored::*;
+use std::path::{Path, PathBuf};
 
 pub fn search_files(dir: &Path, filename: &str, show_dirs: &bool) -> Vec<PathBuf> {
     let mut results = Vec::new();
@@ -15,10 +15,8 @@ pub fn search_files(dir: &Path, filename: &str, show_dirs: &bool) -> Vec<PathBuf
                         println!("{}", format!("Searching at {}", path.display()).green());
                     }
                     results.extend(search_files(&path, filename, show_dirs));
-                } else if path.is_file() {
-                    if path.file_name().and_then(|n| n.to_str()) == Some(filename) {
-                        results.push(path);
-                    }
+                } else if path.is_file() && path.file_name().and_then(|n| n.to_str()) == Some(filename) {
+                    results.push(path);
                 }
             }
         }

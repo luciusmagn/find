@@ -17,7 +17,7 @@ struct Args {
     /// The directory to search
     #[arg(short, long, default_value = ".")]
     dir: String,
-    
+
     /// Show the time elapsed for the search
     #[arg(short, long)]
     time: bool,
@@ -32,10 +32,10 @@ fn main() {
     let (filename, dir, time, show_dirs) = (&args.filename, &args.dir, &args.time, &args.show_dirs);
 
     let start = Instant::now();
-    let results = finder::search_files(&Path::new(dir), filename, show_dirs);
+    let results = finder::search_files(Path::new(dir), filename, show_dirs);
     let elapsed = start.elapsed();
 
-    println!("");
+    println!();
 
     if *time {
         println!("{}", format!("Time elapsed: {:?}", elapsed).yellow().bold());
